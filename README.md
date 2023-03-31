@@ -5,7 +5,7 @@ Optionally annotate genes. Collects quality info on both incoming and outgoing d
 ## Analyses
 
 * Read trimming & QC: [fastp](https://github.com/OpenGene/fastp) and [filtlong](https://github.com/rrwick/Filtlong)
-* Genome Assembly: [unicycler](https://github.com/rpetit3/dragonflye) (long reads, or hybrid)
+* Genome Assembly: [dragonflye](https://github.com/rpetit3/dragonflye) (long reads, or hybrid)
 * Gene Annotation: [prokka](https://github.com/tseemann/prokka) or [bakta](https://github.com/oschwengers/bakta)
 * Assembly QC: [quast](https://github.com/ablab/quast), [bandage](https://github.com/rrwick/bandage)
 
