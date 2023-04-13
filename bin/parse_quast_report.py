@@ -16,9 +16,9 @@ def parse_transposed_quast_report(transposed_quast_report_path):
     field_lookup['# contigs'] = 'num_contigs'
     field_lookup['Largest contig'] = 'largest_contig'
     field_lookup['N50'] = 'assembly_N50'
-    field_lookup['N75'] = 'assembly_N75'
+    field_lookup['N90'] = 'assembly_N90'
     field_lookup['L50'] = 'assembly_L50'
-    field_lookup['L75'] = 'assembly_L75'
+    field_lookup['L90'] = 'assembly_L90'
     field_lookup["# N's per 100 kbp"] = 'num_N_per_100_kb'
     field_lookup['# contigs (>= 0 bp)'] = 'num_contigs_gt_0_bp'
     field_lookup['# contigs (>= 1000 bp)'] = 'num_contigs_gt_1000_bp'
@@ -39,9 +39,9 @@ def parse_transposed_quast_report(transposed_quast_report_path):
         'num_contigs',
         'largest_contig',
         'assembly_N50',
-        'assembly_N75',
+        'assembly_N90',
         'assembly_L50',
-        'assembly_L75',
+        'assembly_L90',
         'num_contigs_gt_0_bp',
         'num_contigs_gt_1000_bp',
         'num_contigs_gt_5000_bp',
@@ -99,9 +99,9 @@ def main():
         'num_contigs',
         'largest_contig',
         'assembly_N50',
-        'assembly_N75',
+        'assembly_N90',
         'assembly_L50',
-        'assembly_L75',
+        'assembly_L90',
         'num_contigs_gt_0_bp',
         'num_contigs_gt_1000_bp',
         'num_contigs_gt_5000_bp',
