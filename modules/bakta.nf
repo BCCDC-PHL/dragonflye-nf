@@ -31,6 +31,7 @@ process bakta {
       mkdir tmp
 
       bakta \
+        --force \
         --threads ${task.cpus} \
         --tmp-dir ./tmp \
         --debug \
