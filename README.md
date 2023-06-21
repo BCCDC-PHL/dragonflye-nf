@@ -43,7 +43,7 @@ nextflow run BCCDC-PHL/dragonflye-nf \
 
 The pipeline also supports a 'samplesheet input' mode. Pass a `samplesheet.csv` file with the headers `ID`, `R1`, `R2`,`LONG`:
 ```
-nextflow run BCCDC-PHL/routine-assembly-nf \
+nextflow run BCCDC-PHL/dragonflye-nf \
   --samplesheet_input <samplesheet.csv> \
   --outdir <output directory>
 ```
