@@ -32,6 +32,10 @@ process dragonflye {
         --outdir ${sample_id}_assembly
 
       sed 's/^>/>${sample_id}_/' ${sample_id}_assembly/contigs.fa > ${sample_id}_dragonflye_${assembly_mode}.fa
+      if [ "${params.use_unicycler_circularization_tag}" == "true" ]; then
+        echo 'switching circularization tag...' >&2
+	sed -i 's/circular\\=Y/circular\\=true/' ${sample_id}_dragonflye_${assembly_mode}.fa
+      fi
       cp ${sample_id}_assembly/flye-unpolished.gfa ${sample_id}_dragonflye_${assembly_mode}_unpolished.gfa
       cp ${sample_id}_assembly/dragonflye.log ${sample_id}_dragonflye_${assembly_mode}.log
       """
