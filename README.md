@@ -56,6 +56,33 @@ sample-02,/path/to/sample-02_R1.fastq.gz,/path/to/sample-02_R2.fastq.gz,/path/to
 sample-03,/path/to/sample-03_R1.fastq.gz,/path/to/sample-03_R2.fastq.gz,/path/to/sample-03_RL.fastq.gz
 ```
 
+By default, dragonflye will tag circularized contigs with a `circular=Y` annotation in the fasta header, and `circular=N` for linear contigs. For example:
+
+```
+>contig00001 len=5202987 cov=191.0 origname=contig_1_polypolish polish=racon:1 round(s);polypolish:short_reads,1 round(s); sw=dragonflye-flye/1.1.0 date=20230912 circular=Y
+>contig00002 len=3964 cov=155.0 origname=contig_4_polypolish polish=racon:1 round(s);polypolish:short_reads,1 round(s); sw=dragonflye-flye/1.1.0 date=20230912 circular=N
+...
+```
+
+In contrast, [unicycler](https://github.com/rrwick/Unicycler) adds a `circular=true` tag to circularized contigs and no circularization tag to linear contigs. For example:
+
+```
+>1 length=5202987 depth=191.0x circular=true
+>2 length=3964 depth=155.0
+```
+
+Both this pipeline and our [BCCDC-PHL/routine-assembly](https://github.com/BCCDC-PHL/routine-assembly) edit the fasta header to add the sample ID to the front. In addition, this
+pipeline accepts a `--use_unicycler_circularization_tag` flag that will convert `circular=Y` to `circular=true` and will remove `circular=N`.
+
+```
+nextflow run BCCDC-PHL/dragonflye-nf \
+  --hybrid \
+  --use_unicycler_circularization_tag \
+  --fastq_input <short-read fastq input directory> \
+  --fastq_input_long <long-read fastq input directory> \
+  --outdir <output directory>
+```
+
 ## Output
 An output directory will be created for each sample under the directory provided with the `--outdir` flag. The directory will be named by sample ID, inferred from
 the fastq files (all characters before the first underscore in the fastq filenames), or the `ID` field of the samplesheet, if one is used.
