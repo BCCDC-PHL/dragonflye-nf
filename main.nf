@@ -12,6 +12,7 @@ include { nanoq as nanoq_pre_filter }  from './modules/long_read_qc.nf'
 include { nanoq as nanoq_post_filter } from './modules/long_read_qc.nf'
 include { merge_nanoq_reports }        from './modules/long_read_qc.nf'
 include { dragonflye }                 from './modules/dragonflye.nf'
+include { rotate_replicons }           from './modules/rotate_replicons.nf'
 include { prokka }                     from './modules/prokka.nf'
 include { bakta }                      from './modules/bakta.nf'
 include { quast }                      from './modules/quast.nf'
@@ -82,23 +83,29 @@ workflow {
       nanoq_post_filter(filtlong.out.filtered_reads.combine(Channel.of("post_filter")))
       merge_nanoq_reports(nanoq_pre_filter.out.report.join(nanoq_post_filter.out.report))
       dragonflye(fastp.out.trimmed_reads.join(filtlong.out.filtered_reads).map{ it -> [it[0], [it[1], it[2], it[3]]] }.combine(ch_assembly_mode))
+      ch_assembly = dragonflye.out.assembly
     } else if (params.long_only) {
       nanoq_pre_filter(ch_long_reads.combine(Channel.of("pre_filter")).map{ it -> [it[0], it[1][0], it[2]] })
       filtlong(ch_long_reads)
       nanoq_post_filter(filtlong.out.filtered_reads.combine(Channel.of("post_filter")))
       merge_nanoq_reports(nanoq_pre_filter.out.report.join(nanoq_post_filter.out.report))
       dragonflye(ch_long_reads.combine(ch_assembly_mode))
+      ch_assembly = dragonflye.out.assembly
     }
 
+    if (params.rotate_replicons) {
+      rotate_replicons(ch_assembly)
+      ch_assembly = rotate_replicons.out.rotated_assembly
+    }
     if (params.prokka) {
-      prokka(dragonflye.out.assembly)
+      prokka(ch_assembly)
     }
 
     if (params.bakta) {
-      bakta(dragonflye.out.assembly)
+      bakta(ch_assembly)
     }
 
-    quast(dragonflye.out.assembly)
+    quast(ch_assembly)
     bandage(dragonflye.out.assembly_graph)
 
     parse_quast_report(quast.out.tsv)
