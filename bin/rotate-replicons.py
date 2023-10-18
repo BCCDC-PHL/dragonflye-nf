@@ -361,15 +361,20 @@ def main(args):
 
             output_contig = contig
 
-        with open(args.output, 'w+') as f:
+        with open(args.output, 'a') as f:
             description_string = ' '.join([str(x) + '=' + str(y) for x, y in output_contig['description'].items()])
             f.write(''.join(['>', output_contig['id'], ' ', description_string, '\n']))
-            f.write(output_contig['seq'])
-            f.write('\n')
+            for i in range(0, len(output_contig['seq']), args.output_line_length):
+                f.write(output_contig['seq'][i:i+args.output_line_length])
+                f.write('\n')
 
     os.chdir(original_current_working_dir)
 
-    if not args.no_cleanup and os.path.exists(tmp_dir_abspath):
+    src_assembly = Path(tmp_dir_abspath) / args.output.name
+    dest_assembly = args.output.parent / args.output.name
+    shutil.move(src_assembly, dest_assembly)
+
+    if not args.no_cleanup and os.path.exists(tmp_dir_abspath):        
         shutil.rmtree(tmp_dir_abspath, ignore_errors=True)
 
 
@@ -377,6 +382,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', type=Path, help="Path to plasmid to be rotated")
     parser.add_argument('-o', '--output', type=Path, default="./rotated.fa", help="Path to write rotated plasmid")
+    parser.add_argument('--output-line-length', type=int, default=60, help="Line length for output fasta file.")
     parser.add_argument('-s', '--start-genes', type=Path, help="Path to 'start genes' (dnaA, repA) file (fasta format)")
     parser.add_argument('-t', '--blast-threads', type=int, default=1, help="Number of CPU threads to use for tblastn.")
     parser.add_argument('--tmp', type=Path, default="./tmp", help="Directory to use for temporary files.")
