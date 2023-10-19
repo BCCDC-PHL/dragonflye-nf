@@ -110,6 +110,17 @@ workflow {
 
     parse_quast_report(quast.out.tsv)
 
+    // Collect csv & tsv outputs from all samples into collection files
+    if (params.collect_outputs) {
+	fastp_json_to_csv.out.map{ it -> it[1] }.collectFile(keepHeader: true, sort: { it.text }, name: "${params.collected_outputs_prefix}_fastp.csv", storeDir: "${params.outdir}")
+	parse_quast_report.out.map{ it -> it[1] }.collectFile(keepHeader: true, sort: { it.text }, name: "${params.collected_outputs_prefix}_quast.csv", storeDir: "${params.outdir}")
+	if (params.hybrid || params.long_only) {
+	    merge_nanoq_reports.out.map{ it -> it[1] }.collectFile(keepHeader: true, sort: { it.text }, name: "${params.collected_outputs_prefix}_nanoq.csv", storeDir: "${params.outdir}")
+	}
+	if (params.rotate_replicons) {
+	    rotate_replicons.out.replicon_rotation.map{ it -> it[1] }.collectFile(keepHeader: true, sort: { it.text }, name: "${params.collected_outputs_prefix}_replicon_rotation.csv", storeDir: "${params.outdir}")
+	}
+    }
     //
     // Provenance collection processes
     // The basic idea is to build up a channel with the following structure:
