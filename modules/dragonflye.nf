@@ -18,14 +18,25 @@ process dragonflye {
       hybrid_long_reads = assembly_mode == "hybrid" ? "--reads ${reads[2]}" : ""
       long_reads        = assembly_mode == "long"   ? "--reads ${reads[0]}" : ""
       polypolish        = assembly_mode == "hybrid" ? "--polypolish" : ""
+      meta              = params.flye_meta ? "--opts '--meta'" : ""
       """
       printf -- "- process_name: dragonflye\\n"                                                 >> ${sample_id}_dragonflye_${assembly_mode}_provenance.yml
       printf -- "  tools:\\n"                                                                   >> ${sample_id}_dragonflye_${assembly_mode}_provenance.yml
       printf -- "    - tool_name: dragonflye\\n"                                                >> ${sample_id}_dragonflye_${assembly_mode}_provenance.yml
       printf -- "      tool_version: \$(dragonflye --version | cut -d ' ' -f 2 | tr -d 'v')\\n" >> ${sample_id}_dragonflye_${assembly_mode}_provenance.yml
+      printf -- "      parameters:\\n"                                                          >> ${sample_id}_dragonflye_${assembly_mode}_provenance.yml
+      printf -- "        - parameter: --tmpdir\\n"                                              >> ${sample_id}_dragonflye_${assembly_mode}_provenance.yml
+      printf -- "          value: ./tmp\\n"                                                     >> ${sample_id}_dragonflye_${assembly_mode}_provenance.yml
+
+      if [ "${params.flye_meta}" == "true" ]; then
+        printf -- "        - parameter: --opts\\n"                                              >> ${sample_id}_dragonflye_${assembly_mode}_provenance.yml
+        printf -- "          value: '--meta'\\n"                                                >> ${sample_id}_dragonflye_${assembly_mode}_provenance.yml
+      fi
+    
 
       dragonflye --cpus ${task.cpus} \
         --tmpdir './tmp' \
+	${meta} \
         ${short_reads} \
         ${hybrid_long_reads} \
 	${long_reads} \
