@@ -83,6 +83,18 @@ nextflow run BCCDC-PHL/dragonflye-nf \
   --outdir <output directory>
 ```
 
+The `--meta` flag can be passed through to flye by adding the `--flye_meta` flag. The `--meta` flag is intended for use with metagenome assemblies,
+but may be helpful in other scenarios such as plasmid assembly:
+
+```
+nextflow run BCCDC-PHL/dragonflye-nf \
+  --hybrid \
+  --flye_meta \
+  --fastq_input <short-read fastq input directory> \
+  --fastq_input_long <long-read fastq input directory> \
+  --outdir <output directory>
+```
+
 ## Output
 An output directory will be created for each sample under the directory provided with the `--outdir` flag. The directory will be named by sample ID, inferred from
 the fastq files (all characters before the first underscore in the fastq filenames), or the `ID` field of the samplesheet, if one is used.
